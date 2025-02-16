@@ -27,7 +27,7 @@ function startGame(){
         cell.textContent = cell.id;
         gameboard.append(cell);
         cell.addEventListener('click', ()=>{
-            if (turn % 2 == 0){
+            if (turn % 2 == 0 && announcement.textContent == ''){
                 
                 cell.textContent = 'X';
                 cell.disabled = true;
@@ -40,7 +40,7 @@ function startGame(){
 
                 message.textContent = "It's Player O's turn!";
 
-            } else {
+            } else if (announcement.textContent == ''){
                 
                 cell.textContent= 'O';
                 cell.disabled =true;
@@ -87,8 +87,6 @@ function startGame(){
                 if (checked > 7){
                     announcement.textContent = "IT'S A TIE!";
                 }
-
-                return checked;
                 
             }
         }

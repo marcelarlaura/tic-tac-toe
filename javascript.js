@@ -84,7 +84,7 @@ function startGame(){
                         checked++;
                     }
                 }
-                if (checked > 7){
+                if (checked > 8){
                     announcement.textContent = "IT'S A TIE!";
                 }
                 

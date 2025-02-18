@@ -1,99 +1,145 @@
-let newGame = document.querySelector('.newGame');
-let gameboard = document.querySelector('.gameboard');
-let message = document.querySelector('.message');
-let announcement = document.querySelector('.winner-announcement');
+let gameStart = (function (){
+
+    console.log(`Menu / Options: \n
+        gameStart.takeTurn()   - Player makes a move \n
+        gameStart.switchTurn() - Assigns turn to play to another player \n
+        gameStart.resetGame()  - Resets to a new match \n`
+    );
 
 
+    let playerX = prompt('Please enter name of player X');
+    let playerO = prompt('Please enter name of player O');
+    let pickedPlayer = playerX;
+    let chosenSpot;
+    let mark = 'X';
 
-function startGame(){
-    let arrayMark = [];
-    let assignId1 = 1;
-    let assignId2 = 1;
-    let turn = 0;
+    let board =[null,null,null, null,null,null, null,null,null];
 
-    gameboard.innerHTML = '';
-
-    message.textContent = "It's Player X's turn!";
-    announcement.textContent = '';
-    for (let i=1; i<10; i++){
-        arrayMark[i-1] = `${assignId2}`;
-        assignId2++;
+  
+    function resetGame(){
+        playerX = prompt('Please enter name of player X');
+        playerO = prompt('Please enter name of player O');
+        pickedPlayer = playerX;
+        chosenSpot = null;
+        mark = 'X';
+    
+        board =[null,null,null, null,null,null, null,null,null];
     }
 
-    for (let i=1; i<10; i++){
-        const cell = document.createElement('button');
-        cell.id= `${assignId1}`;
-        assignId1++;
-        cell.textContent = cell.id;
-        gameboard.append(cell);
-        cell.addEventListener('click', ()=>{
-            if (turn % 2 == 0 && announcement.textContent == ''){
-                
-                cell.textContent = 'X';
-                cell.disabled = true;
+    
 
-                for (let i=1;i<10; i++){
-                    if (arrayMark[i-1] == cell.id){
-                        arrayMark[i-1] = 'X';
-                    }
-                }
+    function switchTurn (){
+        chosenSpot = null;
+        if (pickedPlayer == playerO){
+            pickedPlayer = playerX;
+            mark = 'X';
+        } else {
+            pickedPlayer = playerO;
+            mark = 'O';
+        }
+    }
 
-                message.textContent = "It's Player O's turn!";
+    function takeTurn (){
+        console.log(`It's ${pickedPlayer}'s turn!`);
+        console.log(`\n
+                    ${board[0]} ${board[1]} ${board[2]} \n
+                    ${board[3]} ${board[4]} ${board[5]} \n
+                    ${board[6]} ${board[7]} ${board[8]}`);
+        while (!(Number.isInteger(chosenSpot)) || board[chosenSpot] != null
+                || chosenSpot > 8 || chosenSpot < 0){
+            chosenSpot = Number(prompt('pick an available spot of the board'));
+        }
 
-            } else if (announcement.textContent == ''){
-                
-                cell.textContent= 'O';
-                cell.disabled =true;
-                
-                for (let i=1;i<10; i++){
-                    if (arrayMark[i-1] == cell.id){
-                        arrayMark[i-1] = 'O';
-                    }
-                }
-                message.textContent = "It's Player X's turn!";
+        board[chosenSpot] = mark;
+
+        console.log(`\n
+            ${board[0]} ${board[1]} ${board[2]} \n
+            ${board[3]} ${board[4]} ${board[5]} \n
+            ${board[6]} ${board[7]} ${board[8]}`);
+
+        chooseWinner();
+        
+
+    }
+
+    function checkAllCellsFilled(){
+        let count = 0;
+        for (let i=0; i<9; i++){
+            if (board[i] != null){
+                count++;
             }
+        }
+        if (count >= 8){
+            console.log(`IT'S A TIE!`);
+        }
+    }
 
-            turn++;
-
-            checkWinner();
-            
-        })
-
-        function checkWinner (){
-            if (arrayMark[0] == arrayMark[1] && arrayMark[1] == arrayMark[2]){
-                announcement.textContent = `HURRAY! PLAYER ${arrayMark[1]} HAS WON!`;
-            } else if (arrayMark[3] == arrayMark[4] && arrayMark[4] == arrayMark[5]){
-                announcement.textContent = `HURRAY! PLAYER ${arrayMark[4]} HAS WON!`;
-            } else if (arrayMark[0] == arrayMark[4] && arrayMark[4] == arrayMark[8]){
-                announcement.textContent = `HURRAY! PLAYER ${arrayMark[4]} HAS WON!`;
-            } else if (arrayMark[6] == arrayMark[4] && arrayMark[4] == arrayMark[2]){
-                announcement.textContent = `HURRAY! PLAYER ${arrayMark[4]} HAS WON!`;
-            } else if (arrayMark[0] == arrayMark[3] && arrayMark[3] == arrayMark[6]){
-                announcement.textContent = `HURRAY! PLAYER ${arrayMark[3]} HAS WON!`;
-            } else if (arrayMark[1] == arrayMark[4] && arrayMark[4] == arrayMark[7]) {
-                announcement.textContent = `HURRAY! PLAYER ${arrayMark[4]} HAS WON!`;
-            } else if (arrayMark[2] == arrayMark[5] && arrayMark[5] == arrayMark[8]) {
-                announcement.textContent = `HURRAY! PLAYER ${arrayMark[5]} HAS WON!`;
-            } else if (arrayMark[6] == arrayMark[7] && arrayMark[7] == arrayMark[8]) {
-                announcement.textContent = `HURRAY! PLAYER ${arrayMark[7]} HAS WON!`;
+    function chooseWinner (){
+        if (board[0] == board[1] && board[1] == board[2] && board[0] != null){
+            if (board[0] == 'X'){
+                console.log(`${playerX.toUpperCase()} HAS WON!`);
             } else {
-
-                let checked = 0;
-                for (let i=0; i<9; i++){
-                    if (arrayMark[i] == 'O' || arrayMark[i] == 'X'){
-                        checked++;
-                    }
-                }
-                if (checked > 8){
-                    announcement.textContent = "IT'S A TIE!";
-                }
-                
+                console.log(`${playerO.toUpperCase()} HAS WON!`); 
             }
+        } else if (board[3] == board[4] && board[4] == board[5] && board[3] != null){
+            if (board[3] == 'X'){
+                console.log(`${playerX.toUpperCase()} HAS WON!`);
+            } else {
+                console.log(`${playerO.toUpperCase()} HAS WON!`); 
+            }
+
+        } else if (board[6] == board[7] && board[7] == board[8] && board[6] != null){
+            if (board[6] == 'X'){
+                console.log(`${playerX.toUpperCase()} HAS WON!`);
+            } else {
+                console.log(`${playerO.toUpperCase()} HAS WON!`); 
+            }
+        
+        } else if (board[0] == board[3] && board[3] == board[6] && board[0] != null){
+            if (board[0] == 'X'){
+                console.log(`${playerX.toUpperCase()} HAS WON!`);
+            } else {
+                console.log(`${playerO.toUpperCase()} HAS WON!`); 
+            }
+
+        } else if (board[1] == board[4] && board[4] == board[7] && board[1] != null){
+            if (board[1] == 'X'){
+                console.log(`${playerX.toUpperCase()} HAS WON!`);
+            } else {
+                console.log(`${playerO.toUpperCase()} HAS WON!`); 
+            }
+
+        } else if (board[2] == board[5] && board[5] == board[8] && board[2] != null){
+            if (board[2] == 'X'){
+                console.log(`${playerX.toUpperCase()} HAS WON!`);
+            } else {
+                console.log(`${playerO.toUpperCase()} HAS WON!`); 
+            }
+
+        } else if (board[0] == board[4] && board[4] == board[8] && board[0] != null){
+            if (board[0] == 'X'){
+                console.log(`${playerX.toUpperCase()} HAS WON!`);
+            } else {
+                console.log(`${playerO.toUpperCase()} HAS WON!`); 
+            }
+
+        } else if (board[2] == board[4] && board[4] == board[6] && board[2] != null){
+            if (board[2] == 'X'){
+                console.log(`${playerX.toUpperCase()} HAS WON!`);
+            } else {
+                console.log(`${playerO.toUpperCase()} HAS WON!`); 
+            }
+
+        } else {
+            checkAllCellsFilled();
         }
 
     }
 
-    
-}
+    return {switchTurn, takeTurn,resetGame}
+
+})();
+
+
 
 
